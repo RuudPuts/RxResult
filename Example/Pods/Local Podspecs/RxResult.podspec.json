@@ -1,6 +1,6 @@
 {
   "name": "RxResult",
-  "version": "1.0.2",
+  "version": "2.3",
   "summary": "Result bindings for RxSwift",
   "description": "Result bindings for RxSwift. Adds doOnSuccess, doOnFailure, subscribeSuccess\nand subscribeFailure methods.",
   "homepage": "https://github.com/ivanbruel/RxResult",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/ivanbruel/RxResult.git",
-    "tag": "1.0.2"
+    "tag": "2.3"
   },
   "social_media_url": "https://twitter.com/ivanbruel",
   "platforms": {
@@ -22,10 +22,10 @@
   "source_files": "RxResult/Classes/**/*",
   "dependencies": {
     "RxSwift": [
-      "3.0.0-beta.1"
+      "~> 4.0"
     ],
     "Result": [
-
+      "~> 4.0"
     ]
   }
 }

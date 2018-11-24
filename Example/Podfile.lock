@@ -1,22 +1,31 @@
 PODS:
-  - Result (3.0.0)
-  - RxResult (1.0.2):
-    - Result
-    - RxSwift (= 3.0.0-beta.1)
-  - RxSwift (3.0.0-beta.1)
+  - Result (4.0.0)
+  - RxAtomic (4.4.0)
+  - RxResult (2.3):
+    - Result (~> 4.0)
+    - RxSwift (~> 4.0)
+  - RxSwift (4.4.0):
+    - RxAtomic (~> 4.4)
 
 DEPENDENCIES:
   - RxResult (from `../`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Result
+    - RxAtomic
+    - RxSwift
 
 EXTERNAL SOURCES:
   RxResult:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Result: 1b3e431f37cbcd3ad89c6aa9ab0ae55515fae3b6
-  RxResult: 54555008a738d38b88a772550f050506513189d5
-  RxSwift: 0823e8d7969c23bfa9ddfb2afa4881e424a1a710
+  Result: 7645bb3f50c2ce726dd0ff2fa7b6f42bbe6c3713
+  RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
+  RxResult: 5da47e3df111a78dc97c7959f44e71b97176df4f
+  RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
 
-PODFILE CHECKSUM: 02955c323288b4f1b7d5810ceae966ef43b84b07
+PODFILE CHECKSUM: 251a3f37222b3a575b94cf62e6297e95f479d297
 
-COCOAPODS: 1.1.0.rc.2
+COCOAPODS: 1.5.3

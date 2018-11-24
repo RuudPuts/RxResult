@@ -1,12 +1,14 @@
 //
 //  SerialDispatchQueueScheduler.swift
-//  Rx
+//  RxSwift
 //
 //  Created by Krunoslav Zaher on 2/8/15.
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-import Foundation
+import struct Foundation.TimeInterval
+import struct Foundation.Date
+import Dispatch
 
 /**
 Abstracts the work that needs to be performed on a specific `dispatch_queue_t`. It will make sure 
@@ -29,15 +31,19 @@ public class SerialDispatchQueueScheduler : SchedulerType {
     public typealias TimeInterval = Foundation.TimeInterval
     public typealias Time = Date
     
-    /**
-    - returns: Current time.
-    */
+    /// - returns: Current time.
     public var now : Date {
         return Date()
     }
 
     let configuration: DispatchQueueConfiguration
     
+    /**
+    Constructs new `SerialDispatchQueueScheduler` that wraps `serialQueue`.
+
+    - parameter serialQueue: Target dispatch queue.
+    - parameter leeway: The amount of time, in nanoseconds, that the system will defer the timer.
+    */
     init(serialQueue: DispatchQueue, leeway: DispatchTimeInterval = DispatchTimeInterval.nanoseconds(0)) {
         configuration = DispatchQueueConfiguration(queue: serialQueue, leeway: leeway)
     }
@@ -49,6 +55,7 @@ public class SerialDispatchQueueScheduler : SchedulerType {
     
     - parameter internalSerialQueueName: Name of internal serial dispatch queue.
     - parameter serialQueueConfiguration: Additional configuration of internal serial dispatch queue.
+    - parameter leeway: The amount of time, in nanoseconds, that the system will defer the timer.
     */
     public convenience init(internalSerialQueueName: String, serialQueueConfiguration: ((DispatchQueue) -> Void)? = nil, leeway: DispatchTimeInterval = DispatchTimeInterval.nanoseconds(0)) {
         let queue = DispatchQueue(label: internalSerialQueueName, attributes: [])
@@ -61,6 +68,7 @@ public class SerialDispatchQueueScheduler : SchedulerType {
     
     - parameter queue: Possibly concurrent dispatch queue used to perform work.
     - parameter internalSerialQueueName: Name of internal serial dispatch queue proxy.
+    - parameter leeway: The amount of time, in nanoseconds, that the system will defer the timer.
     */
     public convenience init(queue: DispatchQueue, internalSerialQueueName: String, leeway: DispatchTimeInterval = DispatchTimeInterval.nanoseconds(0)) {
         // Swift 3.0 IUO
@@ -73,17 +81,17 @@ public class SerialDispatchQueueScheduler : SchedulerType {
     /**
      Constructs new `SerialDispatchQueueScheduler` that wraps on of the global concurrent dispatch queues.
      
-     - parameter globalConcurrentQueueQOS: Identifier for global dispatch queue with specified quality of service class.
+     - parameter qos: Identifier for global dispatch queue with specified quality of service class.
      - parameter internalSerialQueueName: Custom name for internal serial dispatch queue proxy.
+     - parameter leeway: The amount of time, in nanoseconds, that the system will defer the timer.
      */
     @available(iOS 8, OSX 10.10, *)
-    public convenience init(globalConcurrentQueueQOS: DispatchQueueSchedulerQOS, internalSerialQueueName: String = "rx.global_dispatch_queue.serial", leeway: DispatchTimeInterval = DispatchTimeInterval.nanoseconds(0)) {
-        let priority = globalConcurrentQueueQOS.qos
-        self.init(queue: DispatchQueue.global(qos: priority.qosClass), internalSerialQueueName: internalSerialQueueName, leeway: leeway)
+    public convenience init(qos: DispatchQoS, internalSerialQueueName: String = "rx.global_dispatch_queue.serial", leeway: DispatchTimeInterval = DispatchTimeInterval.nanoseconds(0)) {
+        self.init(queue: DispatchQueue.global(qos: qos.qosClass), internalSerialQueueName: internalSerialQueueName, leeway: leeway)
     }
     
     /**
-    Schedules an action to be executed immediatelly.
+    Schedules an action to be executed immediately.
     
     - parameter state: State passed to the action to be executed.
     - parameter action: Action to be executed.

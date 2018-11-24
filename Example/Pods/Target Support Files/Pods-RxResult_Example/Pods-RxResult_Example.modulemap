@@ -1,0 +1,6 @@
+framework module Pods_RxResult_Example {
+  umbrella header "Pods-RxResult_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

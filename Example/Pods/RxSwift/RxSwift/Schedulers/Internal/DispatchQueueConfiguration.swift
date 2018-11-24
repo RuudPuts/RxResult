@@ -1,12 +1,13 @@
 //
 //  DispatchQueueConfiguration.swift
-//  Rx
+//  RxSwift
 //
 //  Created by Krunoslav Zaher on 7/23/16.
 //  Copyright © 2016 Krunoslav Zaher. All rights reserved.
 //
 
-import Foundation
+import Dispatch
+import struct Foundation.TimeInterval
 
 struct DispatchQueueConfiguration {
     let queue: DispatchQueue
@@ -42,7 +43,7 @@ extension DispatchQueueConfiguration {
         let compositeDisposable = CompositeDisposable()
 
         let timer = DispatchSource.makeTimerSource(queue: queue)
-        timer.scheduleOneshot(deadline: deadline)
+        timer.schedule(deadline: deadline, leeway: leeway)
 
         // TODO:
         // This looks horrible, and yes, it is.
@@ -76,8 +77,8 @@ extension DispatchQueueConfiguration {
         var timerState = state
 
         let timer = DispatchSource.makeTimerSource(queue: queue)
-        timer.scheduleRepeating(deadline: initial, interval: dispatchInterval(period), leeway: leeway)
-
+        timer.schedule(deadline: initial, repeating: dispatchInterval(period), leeway: leeway)
+        
         // TODO:
         // This looks horrible, and yes, it is.
         // It looks like Apple has made a conceputal change here, and I'm unsure why.

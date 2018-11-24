@@ -1,20 +1,16 @@
 //
 //  DisposeBag.swift
-//  Rx
+//  RxSwift
 //
 //  Created by Krunoslav Zaher on 3/25/15.
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-import Foundation
-
 extension Disposable {
-    /**
-    Adds `self` to `bag`.
-    
-    - parameter bag: `DisposeBag` to add `self` to.
-    */
-    public func addDisposableTo(_ bag: DisposeBag) {
+    /// Adds `self` to `bag`
+    ///
+    /// - parameter bag: `DisposeBag` to add `self` to.
+    public func disposed(by bag: DisposeBag) {
         bag.insert(self)
     }
 }
@@ -36,31 +32,17 @@ public final class DisposeBag: DisposeBase {
     private var _lock = SpinLock()
     
     // state
-    private var _disposables = [Disposable]()
-    private var _isDisposed = false
+    fileprivate var _disposables = [Disposable]()
+    fileprivate var _isDisposed = false
     
-    /**
-    Constructs new empty dispose bag.
-    */
+    /// Constructs new empty dispose bag.
     public override init() {
         super.init()
     }
-    
-    /**
-    Adds `disposable` to be disposed when dispose bag is being deinited.
-    
-    - parameter disposable: Disposable to add.
-    */
-    @available(*, deprecated, renamed: "insert(_:)")
-    public func addDisposable(_ disposable: Disposable) {
-        insert(disposable)
-    }
-    
-    /**
-     Adds `disposable` to be disposed when dispose bag is being deinited.
-     
-     - parameter disposable: Disposable to add.
-     */
+
+    /// Adds `disposable` to be disposed when dispose bag is being deinited.
+    ///
+    /// - parameter disposable: Disposable to add.
     public func insert(_ disposable: Disposable) {
         _insert(disposable)?.dispose()
     }
@@ -76,9 +58,7 @@ public final class DisposeBag: DisposeBase {
         return nil
     }
 
-    /**
-    This is internal on purpose, take a look at `CompositeDisposable` instead.
-    */
+    /// This is internal on purpose, take a look at `CompositeDisposable` instead.
     private func dispose() {
         let oldDisposables = _dispose()
 
@@ -100,5 +80,35 @@ public final class DisposeBag: DisposeBase {
     
     deinit {
         dispose()
+    }
+}
+
+extension DisposeBag {
+
+    /// Convenience init allows a list of disposables to be gathered for disposal.
+    public convenience init(disposing disposables: Disposable...) {
+        self.init()
+        _disposables += disposables
+    }
+
+    /// Convenience init allows an array of disposables to be gathered for disposal.
+    public convenience init(disposing disposables: [Disposable]) {
+        self.init()
+        _disposables += disposables
+    }
+
+    /// Convenience function allows a list of disposables to be gathered for disposal.
+    public func insert(_ disposables: Disposable...) {
+        insert(disposables)
+    }
+
+    /// Convenience function allows an array of disposables to be gathered for disposal.
+    public func insert(_ disposables: [Disposable]) {
+        _lock.lock(); defer { _lock.unlock() }
+        if _isDisposed {
+            disposables.forEach { $0.dispose() }
+        } else {
+            _disposables += disposables
+        }
     }
 }
